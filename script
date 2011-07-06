@@ -1,0 +1,11 @@
+b = 3
+autolook off
+echo off
+f = 2
+prompt off
+add 4 8
+b = 40
+a = 4
+c = 3
+prompt on
+
