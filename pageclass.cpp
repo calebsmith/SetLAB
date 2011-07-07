@@ -130,77 +130,77 @@ void Page::load(string filename){
 	cout << "File loaded successfully." << '\n';
 	return;
 };
-void Page::show(int var){
+void Page::show(string var){
     int i;
-    switch(var){
         
-        case TABS: { cout << "Total tabs:        " << get_tab_size() << '\n'; break;}
-        case TAB:  { cout << "Tab #:             " << get_tab_number() << '\n'; break;}
-        case SETS: { cout << "Total sets in tab: " << get_size() << '\n'; break;}
-        case SET:  { cout << "Current set #:     " << get_iter() << '\n'; break;}
-        
-        case PITCHES: {
-            cout << get_length() << " pitches: ";
-            for (i = 0; i < get_length(); i++){ 
-                cout << get_p(i) << " ";
-            }
-            cout << '\n';
-            break;
+    if(var == "TABS") { cout << "Total tabs)        " << get_tab_size() << '\n'; return;}
+    if(var == "TAB")  { cout << "Tab #)             " << get_tab_number() << '\n'; return;}
+    if(var == "SETS") { cout << "Total sets in tab) " << get_size() << '\n'; return;}
+    if(var == "SET")  { cout << "Current set #)     " << get_iter() << '\n'; return;}
+    
+    if(var == "PITCHES") {
+        cout << get_length() << " pitches) ";
+        for (i = 0; i < get_length(); i++){ 
+            cout << get_p(i) << " ";
         }
-        case PCS: {
-            cout << get_card() << " PC's: ";
-            for (i = 0; i < get_card(); i++){ cout << get_pc(i) << " ";}
-            cout << '\n';
-            break;
-        }
-        
-        case SETINT: break;       
-        case SCINT: break;        
-        case SETBIN: break;
-        case SCBIN: break;
-
-        case INPUT: {cout << "Input:      " << list_string(get_integer()) << '\n'; break;}
-        case SC: { cout << "SC:         " << list_string(get_sc_integer(), 2) << '\n'; break;}
-        case FNAME:{ cout << "Forte name: " << get_fname() << '\n'; break;}
-        case ICV: {cout << "ICV:        " << list_string(get_icv(),3) << '\n'; break;}
-
-        case COMPLIMENT: {cout << "Compliment: " << list_string(get_compliment(),2) <<'\n'; break;}
-        case MPARTNER:{cout << "M-partner:  " << list_string(get_mpartner(),2) << '\n'; break;}
-        case ZPARTNER: {
-            if (get_modulus() <= 12 || get_zpartner() > -1) {
-                cout << "Z-partner:  " << list_string(get_zpartner(),2) << '\n';
-            }
-            else{
-                cout << "Z-partner: " << " disabled for moduli > 12. Use forcez (can be very slow)"<< '\n';   
-            }
-            break;
-        }
+        cout << '\n';
+        return;
     }
+    if(var == "PCS") {
+        cout << get_card() << " PC's) ";
+        for (i = 0; i < get_card(); i++){ cout << get_pc(i) << " ";}
+        cout << '\n';
+        return;
+    }
+    
+    if(var == "SETINT"){}       
+    if(var == "SCINT") {}        
+    if(var == "SETBIN") {}
+    if(var == "SCBIN") {}
+
+    if(var == "INPUT") {cout << "Input)      " << list_string(get_integer()) << '\n'; return;}
+    if(var == "SC") { cout << "SC)         " << list_string(get_sc_integer(), 2) << '\n'; return;}
+    if(var == "FNAME"){ cout << "Forte name) " << get_fname() << '\n'; return;}
+    if(var == "ICV") {cout << "ICV)        " << list_string(get_icv(),3) << '\n'; return;}
+
+    if(var == "COMPLIMENT") {cout << "Compliment) " << list_string(get_compliment(),2) <<'\n'; return;}
+    if(var == "MPARTNER"){cout << "M-partner)  " << list_string(get_mpartner(),2) << '\n'; return;}
+    if(var == "ZPARTNER") {
+        if (get_modulus() <= 12 || get_zpartner() > -1) {
+            cout << "Z-partner)  " << list_string(get_zpartner(),2) << '\n';
+            return;
+        }
+        else{
+            cout << "Z-partner) " << " disabled for moduli > 12. Use forcez (can be very slow)"<< '\n';   
+        }
+        return;
+    }
+    
 };
 
 void Page::stat(){
     cout << '\n';
-    show(TABS);
-    show(TAB);
-    show(SETS);
-    show(SET);
+    show("TABS");
+    show("TAB");
+    show("SETS");
+    show("SET");
     
 };
 void Page::list(){
 
     cout << '\n';
-    show(PITCHES);
-    show(PCS);
+    show("PITCHES");
+    show("PCS");
 };
 void Page::set(){
 
     cout << '\n';
-    show(INPUT);
-    show(SC);
-    show(FNAME);
-    show(ICV);
-    show(COMPLIMENT);
-    show(MPARTNER);
-    show(ZPARTNER);    
+    show("INPUT");
+    show("SC");
+    show("FNAME");
+    show("ICV");
+    show("COMPLIMENT");
+    show("MPARTNER");
+    show("ZPARTNER");    
 }; 
 

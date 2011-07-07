@@ -35,7 +35,7 @@ class Page{
         void swap(Group &a, Group &b) {Group c; c = a; a = b; b = c;}
 		
 		void show(){stat(); list(); set();}; 
-		void show(int var);
+		void show(string var);
 		void stat();
 		void list();
 		void set();

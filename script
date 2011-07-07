@@ -2,6 +2,9 @@ b = 3
 autolook off
 echo off
 f = 2
+g = b
+f = COMPLIMENT
+g = SETINT
 prompt off
 add 4 8
 b = 40

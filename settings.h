@@ -6,14 +6,17 @@ class Program_settings{
     private:
         bool prompt, autolook, echo, showinvalid;
         string filename;
+
         
     public:
+        String_list globals;
         Program_settings(){
             prompt = 1;
             autolook = 1;
             showinvalid = 1;
             echo = 0;
             filename = "unnamed";
+            globals.parse("NONE TABS TAB SETS SET PITCHES PCS SETINT SCINT SETBIN SCBIN INPUT SC FNAME ICV COMPLIMENT MPARTNER ZPARTNER");
         }
         void set_prompt(int in){if (in < 0 || in > 1) return; prompt = in;}
         void set_autolook(int in){if (in < 0 || in > 1) return; autolook = in;}

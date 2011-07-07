@@ -2,6 +2,7 @@
 #include <fstream>
 #include <sstream>
 #include <string.h>
+#include <algorithm>
 
 #include "setclass.h"
 #include "slist.h"
@@ -37,33 +38,16 @@ bool output_commands(Program_settings& settings, String_list& input, Page& setcl
         }
     }
     
-    int varvalue;
     string varname;
+    string varname_upper;
     int i;
     //to see one attribute
     if (args > 0){
         if(command == "print" || command == "show"){
             for (i = 0; i < args; i++){
                 varname = str_arg[i];
-                if (varname == "tabs") varvalue = TABS;
-                if (varname == "tab") varvalue = TAB;
-                if (varname == "sets") varvalue = SETS;
-                if (varname == "set") varvalue = SET;
-                if (varname == "pitches") varvalue = PITCHES;
-                if (varname == "pcs") varvalue = PCS;
-                if (varname == "setint") varvalue = SETINT;
-                if (varname == "scint") varvalue = SCINT;
-                if (varname == "setbin") varvalue = SETBIN;
-                if (varname == "scbin") varvalue = SCBIN;
-                if (varname == "input") varvalue = INPUT;
-                if (varname == "sc") varvalue = SC;
-                if (varname == "fname") varvalue = FNAME;
-                if (varname == "icv") varvalue = ICV;
-                if (varname == "compliment") varvalue = COMPLIMENT;
-                if (varname == "mpartner") varvalue = MPARTNER;
-                if (varname == "zpartner") varvalue = ZPARTNER;
-                
-                if (varvalue > NONE) setclass.show(varvalue);
+                varname_upper = capitalize(varname);
+                if (varname_upper != "NONE") setclass.show(varname_upper);
             }
             return 1;
         }
@@ -77,4 +61,9 @@ bool output_commands(Program_settings& settings, String_list& input, Page& setcl
         }
     }
     return 0;
-}   
+}
+string capitalize(string word){
+
+    transform(word.begin(), word.end(),word.begin(), ::toupper);
+    return word;
+}

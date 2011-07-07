@@ -7,15 +7,12 @@
 #include "slist.h"
 #include "settings.h"
 
-#include "functions.h"
 #include "constants.h"
+#include "variables.h"
+#include "functions.h"
 
 using namespace std;
 
-string rawinput;
-String_list input;
-Page setclass;
-Program_settings settings;
 
 int main(int argc, char* argv[]){
     cout << '\n' << "SETLAB - Console" << '\n';
