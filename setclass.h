@@ -8,8 +8,8 @@ const bool DEBUG = 0;
 
 using namespace std;
 
-    const int PITCH_LIMIT = 640;
-    const int MOD_LIMIT = 31;
+const int PITCH_LIMIT = 640;
+const int MOD_LIMIT = 31;
  
 
 class Set
@@ -267,8 +267,6 @@ class Set
 			};
 
 			Set(const Set& a){
-
-
 				delete [] plist; delete [] pclist;
 				delete [] pc_array; delete [] sc_array; delete [] temp_array;
 				delete icv; delete [] temp_icv;

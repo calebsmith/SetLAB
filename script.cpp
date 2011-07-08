@@ -6,6 +6,7 @@
 #include "setclass.h"
 #include "slist.h"
 #include "settings.h"
+#include "classes.h"
 
 #include "constants.h"
 #include "functions.h"
@@ -23,89 +24,76 @@ bool script_handler(Program_settings& settings, String_list& input, Page& setcla
     load_success = load_script_file(filename, buffer, var_list);    
     if (load_success == 0) return 0;
     
-    int i, i2, i3;
-    int vars;
-    vars = var_list.length();
+    Variables var;    
+    var.make(var_list);
+    int vars = var.length(); 
+   
     
-    //assign memory for variables
-    int* var_value;
-    string* var_name;
-    var_value = new int[vars + 1];
-    var_name = new string[vars + 1];
+    String_list global_list;
+    global_list = settings.globals;
     
-    //assign variable names obtained from var_list
-    for(i = 0; i < vars; i++){
-        var_list >> var_name[i]; 
-    }
     //run the script
     int file_length = buffer.length();
+   
+    int length;
+    
     string line;
     String_list proc_line;
+    
+    
+    
     string name_in;
-    string str_val_in;
-    int value_in;
-    int global_val;
-    bool isanumber, isaglobal;
+    string str_val_in;   
+    
+    string evaled_in;
+    string var_in;
+    int number_in;
+    bool equation =0;
+    int i, i2, i3;
     for(i = 0; i < file_length; i++){
         line = buffer.get(i);       //obtain the next line
-        if (line == "end") break;   //exit if script command is "end"         
+        if (line == "end" || line == "quit") break;   //exit if script command is "end"         
         proc_line.parse(line);      //parse the current line
         
         //show line if echo on
-        if (settings.get_echo() == 1) cout << line << '\n'; 
+        if (settings.get_echo() == 1) cout << line << '\n';      
         
-        //assign variables
-        if (proc_line.get(1) == "="){
-            isanumber = 1;
-            isaglobal = 0;
-            name_in = proc_line.get(0);
-            str_val_in = proc_line.get(2);
-            value_in = string_to_int(str_val_in);
-            //detect if assignment is var to number of var to var
-            if (value_in == 0 && str_val_in != "0") isanumber = 0;
+        //replace variables and globals with their values (if not to the left of equals)        
+        replace_vars(global_list, proc_line, setclass, var);
+        
+      
+        //assign variables (x = var|global|int)
+        length = proc_line.length();
+        equation = 0;
+        for(i2 = 0; i2 < length; i2++){
+            if (proc_line.get(i2) == "=" 
+                && i2 > 0 && i2 + 1 < length){
             
-            for(i2 = 0; i2 < vars; i2++){
-                if (name_in == var_name[i2]){
-                    //if assigning a variable to a number
-                    if (isanumber == 1){
-                        var_value[i2] = value_in;
+                var_in = proc_line.get(i2 - 1);
+                evaled_in = proc_line.get(i2 + 1);
+                number_in = string_to_int(evaled_in);
+                
+                for(i3 = 0; i3 < vars; i3++){ 
+                
+                    if (var_in == var.get_name(i3)){          
+                        equation = 1;          
+                        var.set_value(i3, number_in);
+                        cout << var.get_name(i3) << " is now = to " << var.get_value(i3) << '\n';
                         break;
                     }
-                    
-                    //if assigning a variable to another variable
-                    if (isanumber == 0){
-                        //check for globals
-                        for(i3 = 0; i3 < settings.globals.length(); i3++){                        
-                            if (str_val_in == settings.globals.get(i3)){
-                                isaglobal = 1;   
-                                global_val = find_global(settings.globals.get(i3), setclass);
-                                var_value[i2] = global_val;
-                                break;
-                            }
-                        }
-                        if (isaglobal == 1) continue;
-                        
-                        //not a global, check for local variables                        
-                        for(i3 = 0; i3 < vars; i3++){                            
-                            if (str_val_in == var_name[i3]){
-                                var_value[i2] = var_value[i3];
-                                break;
-                             }
-                        }                        
-                    }
-                    cout << var_name[i2] << " is now = to " << var_value[i2] << '\n';
-                    break;
                 }
-            }
-            
-            continue;
+               
+            } 
         }
         
+       
         //reaching this point means the line contains a regular command.
         //execute that command    
-        command_handler(settings, proc_line, setclass);
+        if (equation == 0){
+            command_handler(settings, proc_line, setclass);
+        }
     }
-        
+    
     return 1;
 }
 bool load_script_file(string filename, String_list& buffer, String_list& var_list){
@@ -154,6 +142,63 @@ bool load_script_file(string filename, String_list& buffer, String_list& var_lis
         }
     fin.close();
     return 1;
+}
+
+//replace variables and globals with values
+void replace_vars(String_list& globals, String_list& proc_line, 
+    Page& setclass, Variables& var){
+    
+    string this_global;
+    string global_str;
+    int global_int;
+    
+    string str_val_in;
+    int value_in;
+    
+    int global_total = globals.length();
+    int length = proc_line.length();
+    int vars = var.length();
+    int i, i2;
+    for(i = 1; i < length; i++){
+        //find int and string equivalents to this argument
+        str_val_in = proc_line.get(i);
+        value_in = string_to_int(str_val_in);            
+        
+        //detect if argument is a number or a string
+        if (value_in == 0 && str_val_in != "0"){
+        
+            //if variable is to the left of = skip this argument
+            if(i < length - 1){
+                if(proc_line.get(i + 1) == "=") continue;
+            }
+            //check for variables
+            for(i2 = 0; i2 < vars; i2++){
+                if(str_val_in == var.get_name(i2)){
+                    proc_line.assign(i, int_to_string(var.get_value(i2)));                    
+                    break;
+                }
+            }
+            //check for globals
+            for(i2 = 0; i2 < global_total; i2++){
+                this_global = globals.get(i2);
+                if(str_val_in == this_global){
+                    global_int = find_global(this_global, setclass);
+                    global_str = int_to_string(global_int);
+                    proc_line.assign(i, global_str);
+                    break;
+                }
+            }              
+        }  
+                 
+    }
+}
+string int_to_string(int int_in){
+    stringstream val;
+    string string_out;
+    
+    val << int_in;
+    val >> string_out;
+    return string_out;
 }
 int string_to_int(string str_in){
     stringstream val;

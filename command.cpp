@@ -6,6 +6,7 @@
 #include "setclass.h"
 #include "slist.h"
 #include "settings.h"
+#include "classes.h"
 
 #include "functions.h"
 #include "constants.h"
@@ -126,8 +127,7 @@ bool input_commands(Program_settings& settings, String_list& input, Page& setcla
     if (args == 1){
         //scripts
         if (command == "script" || command == "run") {
-            script_handler(settings, input, setclass);
-	        return 1;
+            return script_handler(settings, input, setclass);	        
         }
         //pc manipulation
         if (command == "transpose" || command == "t"){

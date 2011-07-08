@@ -7,6 +7,8 @@
 #include "slist.h"
 #include "settings.h"
 
+#include "classes.h"
+
 #include "constants.h"
 #include "variables.h"
 #include "functions.h"

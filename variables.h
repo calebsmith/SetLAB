@@ -6,8 +6,7 @@ string rawinput;
 String_list input;
 Page setclass;
 Program_settings settings;
+Variables var;
 
-//enum{NONE,TABS,TAB,SETS,SET,PITCHES,PCS,SETINT,SCINT,SETBIN,SCBIN,INPUT,
-//    SC,FNAME,ICV,COMPLIMENT,MPARTNER,ZPARTNER};
 #endif
 

@@ -7,7 +7,7 @@ String_list includes the following public methods
 
 clear()				-clear the list
 make(int n)			-make n strings in memory
-assign(int m, string n)		-at point m, overwrite with string n. Must be allocated with make() first.
+assign(int m, string n)		-at point m, overwrite with string n. Must be allocated with make() or parse() first.
 >> string  			-for output(evaluates to and drops the last string in list)
 << string 			-add n to the end of the list
 =				-make a String_list object equivalent to another.

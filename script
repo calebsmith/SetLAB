@@ -9,6 +9,9 @@ prompt off
 add 4 8
 b = 40
 a = 4
+add 2
+show b
+z = 66
 c = 3
-prompt on
+end
 
