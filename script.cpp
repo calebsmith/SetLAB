@@ -48,12 +48,13 @@ bool script_handler(Program_settings& settings, String_list& input, Page& setcla
     string evaled_in;
     string var_in;
     int number_in;
-    bool equation =0;
+    bool equation = 0;
+    //iterate through each line in the buffer loaded from the script file
     int i, i2, i3;
     for(i = 0; i < file_length; i++){
-        line = buffer.get(i);       //obtain the next line
-        if (line == "end" || line == "quit") break;   //exit if script command is "end"         
+        line = buffer.get(i);       //obtain the next line                
         proc_line.parse(line);      //parse the current line
+        if (proc_line.get(0) == "end") break;   //exit if script command is "end" 
         
         //show line if echo on
         if (settings.get_echo() == 1) cout << line << '\n';      
@@ -61,32 +62,10 @@ bool script_handler(Program_settings& settings, String_list& input, Page& setcla
         //replace variables and globals with their values (if not to the left of equals)        
         replace_vars(global_list, proc_line, setclass, var);
         
-      
         //assign variables (x = var|global|int)
-        length = proc_line.length();
         equation = 0;
-        for(i2 = 0; i2 < length; i2++){
-            if (proc_line.get(i2) == "=" 
-                && i2 > 0 && i2 + 1 < length){
-            
-                var_in = proc_line.get(i2 - 1);
-                evaled_in = proc_line.get(i2 + 1);
-                number_in = string_to_int(evaled_in);
-                
-                for(i3 = 0; i3 < vars; i3++){ 
-                
-                    if (var_in == var.get_name(i3)){          
-                        equation = 1;          
-                        var.set_value(i3, number_in);
-                        cout << var.get_name(i3) << " is now = to " << var.get_value(i3) << '\n';
-                        break;
-                    }
-                }
+        equation = handle_equals(proc_line, var);   
                
-            } 
-        }
-        
-       
         //reaching this point means the line contains a regular command.
         //execute that command    
         if (equation == 0){
@@ -191,6 +170,35 @@ void replace_vars(String_list& globals, String_list& proc_line,
         }  
                  
     }
+}
+bool handle_equals(String_list& proc_line, Variables& var){
+    string var_in, evaled_in;
+    int number_in;
+    
+    int vars = var.length();
+    int length = proc_line.length();
+    bool isequation = 0;
+    int i, i2;
+    for(i = 0; i < length; i++){        
+        if (proc_line.get(i) == "=" 
+            && i > 0 && i + 1 < length){
+        
+            var_in = proc_line.get(i - 1);
+            evaled_in = proc_line.get(i + 1);
+            number_in = string_to_int(evaled_in);
+            
+            for(i2 = 0; i2 < vars; i2++){ 
+            
+                if (var_in == var.get_name(i2)){          
+                    isequation = 1;          
+                    var.set_value(i2, number_in);                    
+                    break;
+                }
+            }
+           
+        } 
+    }
+    return isequation;    
 }
 string int_to_string(int int_in){
     stringstream val;
