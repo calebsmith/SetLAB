@@ -1,15 +1,15 @@
 b = 3
 autolook off
-echo off
+echo on
 f = 2
 g = b
 f = COMPLIMENT
 g = SETINT
 prompt off
-add 4 8
+add g 
 b = 40
 a = 4
-add 2
+add f a
 show b
 z = 66
 c = 3

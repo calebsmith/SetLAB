@@ -8,7 +8,7 @@ void command_handler(Program_settings& settings, String_list& input, Page& setcl
         int find_global(string, Page& setclass);
 
     bool script_handler(Program_settings& settings, String_list& input, Page& setclass);
-        bool load_script_file(string filename, String_list& buffer, String_list& var_list);
+        bool load_script_file(string filename, String_list& buffer, Variables& var, Loops& forloops);
         void replace_vars(String_list& globals, String_list& proc_line, Page& setclass, Variables& var);
         bool handle_equals(String_list& proc_line, Variables& var);
         int string_to_int(string str_in);

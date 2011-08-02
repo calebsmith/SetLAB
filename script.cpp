@@ -15,42 +15,34 @@ using namespace std;
 bool script_handler(Program_settings& settings, String_list& input, Page& setclass){
   
     String_list buffer, var_list;
+    Variables var;
+    Loops forloop;
+    
     bool load_success;   
     string filename;
     input >> filename; 
     
     //load script into memory, return if file fails to open. 
     //load variable names into var_list
-    load_success = load_script_file(filename, buffer, var_list);    
-    if (load_success == 0) return 0;
-    
-    Variables var;    
-    var.make(var_list);
-    int vars = var.length(); 
+    load_success = load_script_file(filename, buffer, var, forloop);    
+    if (load_success == 0) return 0;       
    
-    
     String_list global_list;
     global_list = settings.globals;
     
-    //run the script
     int file_length = buffer.length();
-   
-    int length;
     
     string line;
     String_list proc_line;
-    
-    
     
     string name_in;
     string str_val_in;   
     
     string evaled_in;
     string var_in;
-    int number_in;
     bool equation = 0;
     //iterate through each line in the buffer loaded from the script file
-    int i, i2, i3;
+    int i;
     for(i = 0; i < file_length; i++){
         line = buffer.get(i);       //obtain the next line                
         proc_line.parse(line);      //parse the current line
@@ -65,6 +57,9 @@ bool script_handler(Program_settings& settings, String_list& input, Page& setcla
         //assign variables (x = var|global|int)
         equation = 0;
         equation = handle_equals(proc_line, var);   
+        
+        //handle for loops
+        //handle_loops(
                
         //reaching this point means the line contains a regular command.
         //execute that command    
@@ -75,7 +70,7 @@ bool script_handler(Program_settings& settings, String_list& input, Page& setcla
     
     return 1;
 }
-bool load_script_file(string filename, String_list& buffer, String_list& var_list){
+bool load_script_file(string filename, String_list& buffer, Variables& var, Loops& forloops){
     //convert filename to char* for opening the file
     char name [255] = "";
     stringstream scr_fn;
@@ -89,6 +84,7 @@ bool load_script_file(string filename, String_list& buffer, String_list& var_lis
                
        
         //load file into a buffer and count the number of variables
+        String_list var_list;
         int vars = 0;
         bool samename;
         String_list proc_line;
@@ -120,6 +116,7 @@ bool load_script_file(string filename, String_list& buffer, String_list& var_lis
             if(line == "end") break;
         }
     fin.close();
+    var.make(var_list);
     return 1;
 }
 
