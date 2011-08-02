@@ -11,7 +11,12 @@ b = 40
 a = 4
 add f a
 show b
+for foo
+for bar
+i = 30
+next
 z = 66
+next
 c = 3
 end
 

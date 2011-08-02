@@ -86,17 +86,22 @@ bool load_script_file(string filename, String_list& buffer, Variables& var, Loop
         //load file into a buffer and count the number of variables
         String_list var_list;
         int vars = 0;
+        int loopno;
+        int loopcount;
+        int looptell, nexttell;
         bool samename;
         String_list proc_line;
         string line, name_in;
-        int i;
+        int i, lineno;
+        lineno = 0;
         while(fin.eof() != 1){
             getline(fin, line);     //obtain a line from the file
             buffer << line;         //store in buffer
             proc_line.parse(line);  //parse the line for processing
-            
-            //line added to buffer, now check for variable assignments
+            lineno++;
+            //now check for variables and loops
             if (proc_line.length() > 1){
+                //check for variables
                 if (proc_line.get(1) == "="){
                     name_in = proc_line.get(0);
                     //check that the variable name is unique
@@ -112,11 +117,44 @@ bool load_script_file(string filename, String_list& buffer, Variables& var, Loop
                         vars++;
                     }
                 }
+                //check for for loops
+                if (proc_line.get(0) == "for"){
+                    loopno = forloops.get_loops();
+                    forloops.add_loop();
+
+                    looptell = fin.tellg();
+                    forloops.set_begin(loopno, looptell);
+                    
+                    loopcount = 1;
+                    while(loopcount == 1){
+                        nexttell = fin.tellg();
+                        getline(fin, line);     
+                        proc_line.parse(line);
+                        
+                        if(proc_line.get(0) == "for") loopcount++;
+                        if(proc_line.get(0) == "next") loopcount--;
+                        
+                        if(loopcount == 0){
+                            forloops.set_end(loopno, nexttell);
+                        }
+                        if (fin.fail()){
+                            fin.clear();
+                            fin.seekg(looptell);
+                            return 0;
+                        }
+                    }
+                    fin.seekg(looptell);
+                }
             }
             if(line == "end") break;
         }
     fin.close();
     var.make(var_list);
+    
+    cout << "Loops" << '\n';
+    for (i = 0; i < forloops.get_loops(); i++){
+        cout << i << ". " << forloops.get_begin(i) << " to " << forloops.get_end(i) << '\n';
+    }
     return 1;
 }
 

@@ -8,6 +8,36 @@ class Loops{
         int* iter;
         int* limit;
         int loops;
+        
+        void del(){
+            delete [] begin_line;
+            delete [] end_line;
+            delete [] iter;
+            delete [] limit;
+        }
+         void make(int num){
+            del();
+            loops = num;
+            begin_line = new int[loops];
+            end_line = new int[loops];
+            iter = new int[loops];
+            limit = new int[loops];
+        }
+        void assign(int num, const Loops& a){
+            int i;
+            for(i = 0; i < num; i++){
+                begin_line[i] = a.begin_line[i];
+                end_line[i] = a.end_line[i];
+                iter[i] = a.iter[i];
+                limit[i] = a.limit[i];
+            }
+        }
+        void init(int i){            
+            begin_line[i] = 0;
+            end_line[i] = 0;
+            iter[i] = 0;
+            limit[i] = 0;
+        }
     public:
         Loops(){
             loops = 0;
@@ -17,22 +47,45 @@ class Loops{
             limit = new int[1];
         }
         ~Loops(){
-            delete [] begin_line;
-            delete [] end_line;
-            delete [] iter;
-            delete [] limit;
-        }
+            del();            
+        }        
+        Loops& operator= (const Loops &a){
+			if(this == &a) return *this;	
+			make(loops);	
+			int i;
+			for (i = 0; i < loops; i++){
+			    begin_line[i] = a.begin_line[i];
+			    end_line[i] = a.end_line[i];
+			    iter[i] = a.iter[i];
+			    limit[i] = a.limit[i];
+			}			
+			assign(loops, a);
+			return *this;
+		}
+        void add_loop(){           
+            loops++;            
+            make(loops);
+            int i;
+            for (i = 0; i < loops; i++){
+			    begin_line[i] = a.begin_line[i];
+			    end_line[i] = a.end_line[i];
+			    iter[i] = a.iter[i];
+			    limit[i] = a.limit[i];
+			}	
+            init(loops); 
+            return;      
+        }   
         
         bool check_val(int val){if (val < 0 || val >= loops) return 1; return 0;}
         
-        bool set_begin_line(int i, int val){if (check_val(i)) return 0; begin_line[i] = val; return 1;}
-        bool set_end_line(int i, int val){if (check_val(i)) return 0; end_line[i] = val; return 1;}
+        bool set_begin(int i, int val){if (check_val(i)) return 0; begin_line[i] = val; return 1;}
+        bool set_end(int i, int val){if (check_val(i)) return 0; end_line[i] = val; return 1;}
         bool set_iter(int i, int val){if (check_val(i)) return 0; iter[i] = val; return 1;}
         bool set_limit(int i, int val){if (check_val(i)) return 0; limit[i] = val; return 1;}
         bool set_loops(int val){loops = val; return 1;}
         
         bool add_iter(int i){if (check_val(i)) return 0; iter[i]++; return 1;}
-        void add_loops(){loops++;}
+        
         
         int get_loops(){int a = loops; return a;}
         int get_begin(int i){if (check_val(i)) return 0; int a = begin_line[i]; return a;}
